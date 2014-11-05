@@ -1,0 +1,174 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=0, width=device-width"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/common.css"/>
+</head>
+<body>
+<header>
+    <div class="index header ">
+        <a class="menu" tapmode="" onclick="sliding()"></a>
+        <a class="close hidden" tapmode="" onclick="closeSearch()"></a>
+
+        <div class="city location" onclick="openCityList()" tapmode="">
+            <p id="city" onclick="">上海</p>
+        </div>
+        <div class="searchWrap" onclick="openSearch()" tapmode="">
+            <input type="text" placeholder="马尔代夫"/>
+        </div>
+        <a class="phone " tapmode="" onclick="phone()"></a>
+    </div>
+    <div class="user header hidden">
+        <a class="menu" tapmode="" onclick="sliding()"></a>
+
+        <div class="title">我的途牛</div>
+        <span class="register"> 注册</span>
+    </div>
+    <div class="tour header hidden">
+        <a class="menu" tapmode="" onclick="sliding()"></a>
+
+        <div class="title" id="title"></div>
+        <a class="bell" tapmode="" onclick="bell()"></a>
+        <a class="dock" tapmode="" onclick="menu()"></a>
+    </div>
+</header>
+<script>
+    apiready = function () {
+        try {
+            api.setStatusBarStyle({
+                style: 'dark'
+            });
+            fixIos7Bar($("header"));
+            api.openFrameGroup({
+                name: 'group',
+                scrollEnabled: false,
+                rect: {x: 0, y: $("header").height(), w: 'auto', h: 'auto'},
+                index: 0,
+                frames: [
+                    {
+                        name: 'main',
+                        url: 'main.html'
+                    },
+                    {
+                        name: 'user',
+                        url: 'user.html'
+                    },
+                    {
+                        name: 'toursList',
+                        url: 'toursList.html'
+                    }
+                ]
+            }, function (ret, err) {
+
+            });
+        } catch (e) {
+            alert(e)
+        }
+
+    };
+    function sliding() {
+        api.openSlidPane({type: 'left'});
+    }
+
+    function setFrameGroupIndex(param) {
+        if (param.index < 2) {
+            api.setFrameAttr({
+                name: 'toursList_tab',
+                hidden: true
+            });
+            api.setFrameAttr({
+                name: 'toursList-con',
+                hidden: true
+            });
+        } else {
+            api.setFrameAttr({
+                name: 'toursList_tab',
+                hidden: false
+            });
+            api.setFrameAttr({
+                name: 'toursList-con',
+                hidden: false
+            });
+        }
+        if (param.title) {
+            $("#title").html('全部' + param.title);
+        }
+        $(".header").eq(param.index).removeClass('hidden').siblings().addClass('hidden');
+        api.setFrameGroupIndex({
+            name: 'group',
+            index: param.index
+        });
+        api.execScript({name: 'slider', frameName: 'toursList_tab', script: 'setDestination()'})
+    }
+    function menu() {
+        api.execScript({name: 'slider', frameName: 'toursList_tab', script: 'closeFrameGroup()'});
+        api.openFrame({
+            name: 'slider-header-menu',
+            url: 'slider-header-menu.html',
+            rect: {x: 0, y: $("header").height(), w: 'auto', h: 'auto'},
+            bounces: false,
+            bgColor: 'rgba(51,51,51,0.6)'
+        })
+    }
+    function closeMenu() {
+        api.closeFrame({name: 'slider-header-menu'})
+    }
+    function bell() {
+        api.toast({msg: '订阅成功', location: 'top'})
+    }
+    function phone() {
+        api.call({
+            type: 'tel_prompt',
+            number: '400-710-3687'
+        });
+    }
+    function openCityList() {
+        api.openWin({
+            name: 'cityList',
+            url: 'cityList.html',
+            animation: {
+                type: 'movein',
+                subType: 'from_bottom',
+                duration: 300
+            }
+        });
+
+    }
+    function openSearch() {
+        $(".menu").addClass('hidden');
+        $(".close").removeClass('hidden');
+        $(".phone").addClass('hidden');
+        $(".searchWrap").css({'margin-right': '5px'});
+        api.openFrame({
+            name: 'search',
+            url: 'search.html',
+            bounces: false,
+            rect: {
+                x: 0,
+                y: $("header").height(),
+                w: 'auto',
+                h: 'auto'
+            }
+        })
+    }
+    function closeSearch() {
+        try {
+            $(".menu").removeClass('hidden');
+            $(".close").addClass('hidden');
+            $(".phone").removeClass('hidden');
+            $(".searchWrap").css({'margin-right': '0'}).find('input').get(0).blur();
+            api.closeFrame({
+                name: 'search'
+            });
+        } catch (e) {
+            alert(e)
+        }
+    }
+</script>
+</body>
+<script type="text/javascript" src="../script/zepto.min.js"></script>
+</html>
