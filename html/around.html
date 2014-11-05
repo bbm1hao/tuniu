@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=0, width=device-width"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/common.css"/>
+</head>
+<body>
+<header>
+    <div class="header ">
+        <a class="back" tapmode="" onclick="api.closeWin()"></a>
+
+        <div class="title">周边旅游</div>
+        <a></a>
+    </div>
+</header>
+<script type="text/javascript" src="../script/zepto.min.js"></script>
+<script>
+    apiready = function () {
+        fixIos7Bar($("header"));
+        api.openFrame({
+            name: "around-con",
+            url: 'around-con.html',
+            rect: {
+                x: 0,
+                y: $("header").height(),
+                h: 'auto',
+                w: 'auto'
+            }
+        })
+    }
+
+</script>
+</body>
+</html>
